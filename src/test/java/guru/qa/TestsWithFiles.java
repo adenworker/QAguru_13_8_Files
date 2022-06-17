@@ -10,6 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -46,6 +48,10 @@ public class TestsWithFiles {
         if (files.length == 0) {
             throw new IllegalArgumentException("No files in path " + path);
         }
+        //Создаем директорию для архива, если ее не существует
+        if (!Files.isDirectory(Paths.get("test_archives"))){
+            new File("test_archives").mkdirs();
+        }
         //Запускаем процесс записи файла
         try (FileOutputStream fos = new FileOutputStream("test_archives/zipped.zip")) {
             //Запускаем процесс записи архива
@@ -77,6 +83,8 @@ public class TestsWithFiles {
                 assertThat(entry.getName().length() > 0).isTrue();
             }
         }
+
+
     }
 
     /**
@@ -89,6 +97,10 @@ public class TestsWithFiles {
     @Test
     @DisplayName("Чтение файлов архива с сохранением на диск")
     void unzippingTestWithFiles() throws Exception {
+        //Создаем директорию для файлов, если ее не существует
+        if (!Files.isDirectory(Paths.get("test_files"))){
+            new File("test_files").mkdirs();
+        }
         //Запускаем процесс чтения архива
         try (InputStream inputZippedStream = classLoader.getResourceAsStream("archive/zipped.zip")) {
             assert inputZippedStream != null;
